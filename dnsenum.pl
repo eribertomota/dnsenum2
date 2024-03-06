@@ -50,9 +50,6 @@
 use strict;
 use warnings
   ; #it complains about uninitialized values when it doesn't find address in RR; need to fix later
-no
-  if $] >= 5.018, 'warnings',
-  "experimental::smartmatch";    # Mute Experimental Warning
 use Config;
 use Term::ANSIColor;
 use Getopt::Long;
@@ -741,9 +738,9 @@ sub nslookup {
                 ##we only print / add the result if it doesn't match the wildcardaddress
                 if (
                     !(
-                        $rr->can('address') && $rr->address ~~ @wildcardaddress
+                        $rr->can('address') && grep { $_ eq $rr->address } @wildcardaddress
                     )
-                    && !( $rr->name ~~ @wildcardcname )
+                    && !( grep { $_ eq $rr->name } @wildcardcname )
                   )
                 {
                     printrr( $rr->string );
